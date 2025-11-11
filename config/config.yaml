@@ -1,0 +1,56 @@
+seed: 42
+use_val_dir: false # 若 data/val 为空，建议设 false 自动切分
+val_ratio: 0.1
+
+paths:
+  data_dir: "data"
+  train_dir: "data/train"
+  val_dir: "data/val"
+  test_dir: "data/test"
+  output_dir: "output"
+  checkpoints_dir: "checkpoints"
+  logs_dir: "logs"
+  stopwords: "config/cn_stopwords.txt"
+
+preprocess:
+  use_bigram: true
+  max_features: 30000
+  min_df: 2
+
+train:
+  mode: "sgd" # 可选: "fast" | "sgd" | "grid"
+  cv_folds: 3 # grid 模式用；建议 3 起步
+  n_jobs: -1
+  sgd:
+    loss: "log_loss"
+    max_epochs: 5
+    batch_size: 512
+    eval_every: 1
+    learning_rate: 0.0005
+
+grid_params:
+  nb:
+    tfidf__max_features: [30000]
+    tfidf__ngram_range:
+      - [1, 2]
+    clf__alpha: [0.5]
+  svm:
+    tfidf__max_features: [30000]
+    tfidf__ngram_range:
+      - [1, 2]
+    clf__C: [1.0]
+  lr:
+    tfidf__max_features: [30000]
+    tfidf__ngram_range:
+      - [1, 2]
+    clf__C: [1.0]
+    clf__penalty: ["l2"]
+
+viz:
+  tqdm_mininterval: 0.2
+  save_confusion_matrix: true
+
+fast:
+  n_features: 1048576 # 2**20
+  C: 1.0
+  use_bigram: true
